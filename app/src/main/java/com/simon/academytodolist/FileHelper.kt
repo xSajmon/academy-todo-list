@@ -1,6 +1,7 @@
 package com.simon.academytodolist
 
 import android.content.Context
+import android.widget.Toast
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -16,7 +17,7 @@ class FileHelper {
             var oas: ObjectOutputStream? = null
             var fos: FileOutputStream? = null
             try {
-                fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE)
+                fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE) // this method automatically creates file if it does not exits
                 oas = ObjectOutputStream(fos)
                 oas.writeObject(item)
             } catch (e: FileNotFoundException){
@@ -37,6 +38,7 @@ class FileHelper {
                 itemList = ois.readObject() as ArrayList<String>
             } catch (e: FileNotFoundException){
                 e.printStackTrace()
+                Toast.makeText(context, "File does not exists.", Toast.LENGTH_LONG).show()
             }
             finally {
                 fis?.close()
