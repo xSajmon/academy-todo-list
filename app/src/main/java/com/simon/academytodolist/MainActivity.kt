@@ -3,23 +3,22 @@ package com.simon.academytodolist
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.simon.academytodolist.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var item: EditText
     private lateinit var add: Button
-    private lateinit var listView: ListView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var listAdapter: ItemListAdapter
     private var itemList: ArrayList<String> = arrayListOf()
-    private lateinit var arrayAdapter: ArrayAdapter<String>
     private val listViewModel: ListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,19 +28,19 @@ class MainActivity : AppCompatActivity() {
 
         item = binding.editText
         add = binding.button
-        listView = binding.list
+        recyclerView = binding.list
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+
+        listAdapter = ItemListAdapter(ArrayList()) { _, position ->
+            confirm(position)
+        }
 
         itemList = FileHelper.readData(this)
-        arrayAdapter = ArrayAdapter(this,
-            android.R.layout.simple_list_item_1,
-            android.R.id.text1,
-            itemList)
-        listView.adapter = arrayAdapter
 
         listViewModel.load(itemList)
         listViewModel.itemList.observe(this) {
-            itemList = it
-            arrayAdapter.notifyDataSetChanged()
+            listAdapter.setList(it)
+            recyclerView.adapter = listAdapter
             FileHelper.writeData(it, applicationContext)
         }
 
@@ -50,15 +49,15 @@ class MainActivity : AppCompatActivity() {
             listViewModel.addItem(newItem)
             item.text.clear()
         }
+    }
 
-        listView.setOnItemClickListener { _, _, position, _ ->
-            val dialog = DeleteItemDialogFragment()
-            val bundle = Bundle()
-            bundle.putString("item", itemList[position])
-            bundle.putInt("itemPosition", position)
-            dialog.arguments = bundle
-            dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
-        }
+    private fun confirm(position: Int) {
+        val dialog = DeleteItemDialogFragment()
+        val bundle = Bundle()
+        bundle.putString("item", itemList[position])
+        bundle.putInt("itemPosition", position)
+        dialog.arguments = bundle
+        dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
     }
 
 }
