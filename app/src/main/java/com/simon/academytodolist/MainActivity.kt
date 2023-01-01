@@ -1,5 +1,6 @@
 package com.simon.academytodolist
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -41,7 +42,9 @@ class MainActivity : AppCompatActivity(){
         listViewModel.itemList.observe(this) {
             listAdapter.setList(it)
             recyclerView.adapter = listAdapter
-            FileHelper.writeData(it, applicationContext)
+            val i = Intent(this, FileService::class.java)
+            i.putStringArrayListExtra("data", it)
+            startService(i)
         }
 
         add.setOnClickListener{
