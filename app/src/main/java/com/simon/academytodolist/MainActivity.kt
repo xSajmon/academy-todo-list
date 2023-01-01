@@ -1,14 +1,16 @@
 package com.simon.academytodolist
 
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.simon.academytodolist.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private var itemList: ArrayList<String> = arrayListOf()
     private lateinit var arrayAdapter: ArrayAdapter<String>
+    private val listViewModel: ListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,36 +31,33 @@ class MainActivity : AppCompatActivity() {
         add = binding.button
         listView = binding.list
 
-
         itemList = FileHelper.readData(this)
         arrayAdapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1,
             android.R.id.text1,
             itemList)
-
         listView.adapter = arrayAdapter
+
+        listViewModel.load(itemList)
+        listViewModel.itemList.observe(this) {
+            itemList = it
+            arrayAdapter.notifyDataSetChanged()
+            FileHelper.writeData(it, applicationContext)
+        }
 
         add.setOnClickListener{
             val newItem = item.text.toString()
-            itemList.add(newItem)
+            listViewModel.addItem(newItem)
             item.text.clear()
-            FileHelper.writeData(itemList, applicationContext)
-            arrayAdapter.notifyDataSetChanged()
         }
-        
+
         listView.setOnItemClickListener { _, _, position, _ ->
-            val alert = AlertDialog.Builder(this)
-            alert.setTitle("Delete")
-            alert.setMessage("Do you want to delete this item from the list?")
-            alert.setCancelable(false)
-            alert.setNegativeButton("No") { dialogInterface, _ -> dialogInterface.cancel() }
-            alert.setPositiveButton("Yes") { dialogInterface, _ ->
-                itemList.removeAt(position)
-                arrayAdapter.notifyDataSetChanged()
-                FileHelper.writeData(itemList, applicationContext)
-                dialogInterface.cancel()
-            }
-            alert.show()
+            val dialog = DeleteItemDialogFragment()
+            val bundle = Bundle()
+            bundle.putString("item", itemList[position])
+            bundle.putInt("itemPosition", position)
+            dialog.arguments = bundle
+            dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
         }
     }
 
