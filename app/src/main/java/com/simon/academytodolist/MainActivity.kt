@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(){
             confirm(position)
         }
 
-        itemList = FileHelper.readData(this)
+        itemList = SharedPreferencesHelper.readData(applicationContext)
 
         listViewModel.load(itemList)
         listViewModel.itemList.observe(this) {
