@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.simon.academytodolist.databinding.ActivityMainBinding
@@ -19,8 +18,9 @@ class MainActivity : AppCompatActivity(){
     private lateinit var add: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var listAdapter: ItemListAdapter
-    private var itemList: ArrayList<String> = arrayListOf()
+    private var itemList: ArrayList<Item> = arrayListOf()
     private val listViewModel: ListViewModel by viewModels()
+    private var listType = ListType.ACTIVE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity(){
 
         listViewModel.load(itemList)
         listViewModel.itemList.observe(this) {
-            listAdapter.setList(it)
+            listAdapter.setList(it, listType)
             recyclerView.adapter = listAdapter
             val i = Intent(this, FileService::class.java)
-            i.putStringArrayListExtra("data", it)
+            i.putExtra("data", it)
             startService(i)
         }
 
@@ -57,8 +57,9 @@ class MainActivity : AppCompatActivity(){
     private fun confirm(position: Int) {
         val dialog = DeleteItemDialogFragment()
         val bundle = Bundle()
-        bundle.putString("item", itemList[position])
-        bundle.putInt("itemPosition", position)
+        val itemList = itemList[position]
+        bundle.putString("item", itemList.text)
+        bundle.putInt("itemPosition", itemList.id)
         dialog.arguments = bundle
         dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
     }

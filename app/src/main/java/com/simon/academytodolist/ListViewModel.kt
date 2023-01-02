@@ -1,28 +1,26 @@
 package com.simon.academytodolist
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlin.math.log
 
 class ListViewModel: ViewModel() {
 
-    private val _itemList = MutableLiveData<ArrayList<String>>()
-    val itemList: LiveData<ArrayList<String>> get() = _itemList
+    private val _itemList = MutableLiveData<ArrayList<Item>>()
+    val itemList: LiveData<ArrayList<Item>> get() = _itemList
 
-    fun load(list: ArrayList<String>){
+    fun load(list: ArrayList<Item>){
         _itemList.value = list
     }
 
-    fun addItem(item: String){
-        _itemList.value?.add(item)
-        _itemList.value = _itemList.value
+    fun addItem(text: String){
+        val updated = _itemList.value
+        updated?.add(Item(id = updated.size, text = text))
+        _itemList.value = updated!!
     }
 
     fun deleteItem(position: Int){
-        _itemList.value?.removeAt(position)
+        _itemList.value?.get(position)!!.isDeleted = true
         _itemList.value = _itemList.value
     }
 
