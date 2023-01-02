@@ -32,15 +32,15 @@ class MainActivity : AppCompatActivity(){
         recyclerView = binding.list
         recyclerView.layoutManager = LinearLayoutManager(applicationContext)
 
-        listAdapter = ItemListAdapter(ArrayList()) { _, position ->
-            confirm(position)
+        listAdapter = ItemListAdapter(ArrayList(), listType) { item, _ ->
+            confirm(item)
         }
 
         itemList = SharedPreferencesHelper.readData(applicationContext)
 
         listViewModel.load(itemList)
         listViewModel.itemList.observe(this) {
-            listAdapter.setList(it, listType)
+            listAdapter.setList(it)
             recyclerView.adapter = listAdapter
             val i = Intent(this, FileService::class.java)
             i.putExtra("data", it)
@@ -52,14 +52,19 @@ class MainActivity : AppCompatActivity(){
             listViewModel.addItem(newItem)
             item.text.clear()
         }
+
+        binding.mode.setOnClickListener{
+            listType = if(listType == ListType.ACTIVE) ListType.ALL else ListType.ACTIVE
+            listAdapter.type = listType
+            listAdapter.setList(itemList)
+        }
     }
 
-    private fun confirm(position: Int) {
+    private fun confirm(item: Item) {
         val dialog = DeleteItemDialogFragment()
         val bundle = Bundle()
-        val itemList = itemList[position]
-        bundle.putString("item", itemList.text)
-        bundle.putInt("itemPosition", itemList.id)
+        bundle.putString("item", item.text)
+        bundle.putInt("itemPosition", item.id)
         dialog.arguments = bundle
         dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
     }
