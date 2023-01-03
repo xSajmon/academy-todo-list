@@ -37,7 +37,13 @@ class ItemListAdapter(var items: ArrayList<Item>, var type: ListType, val listen
         fun bind(item: Item){
             binding.itemName.text = item.text
             binding.deleteBtn.setOnClickListener{ listener(item, adapterPosition) }
-            if(item.isDeleted == true) binding.itemName.alpha = 0.5f else binding.itemName.alpha = 1.0f
+            if(item.isDeleted == true){
+                binding.itemName.alpha = 0.5f
+                binding.deleteBtn.setBackgroundResource(R.drawable.ic_restore)
+            } else {
+                binding.itemName.alpha = 1.0f
+                binding.deleteBtn.setBackgroundResource(R.drawable.ic_delete)
+            }
 
         }
     }

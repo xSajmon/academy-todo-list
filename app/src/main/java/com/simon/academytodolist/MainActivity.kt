@@ -33,7 +33,11 @@ class MainActivity : AppCompatActivity(){
         recyclerView.layoutManager = LinearLayoutManager(applicationContext)
 
         listAdapter = ItemListAdapter(ArrayList(), listType) { item, _ ->
-            confirm(item)
+            if(!item.isDeleted!!){
+                confirm(item)
+            } else {
+                restore(item)
+            }
         }
 
         itemList = SharedPreferencesHelper.readData(applicationContext)
@@ -53,11 +57,17 @@ class MainActivity : AppCompatActivity(){
             item.text.clear()
         }
 
-        binding.mode.setOnClickListener{
+        binding.modeBtn.setOnClickListener{
             listType = if(listType == ListType.ACTIVE) ListType.ALL else ListType.ACTIVE
             listAdapter.type = listType
             listAdapter.setList(itemList)
         }
+    }
+
+    private fun restore(item: Item) {
+        listViewModel.restoreItem(item.id)
+        Toast.makeText(this, "${item.text} has been restored", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun confirm(item: Item) {

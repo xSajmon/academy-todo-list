@@ -3,6 +3,8 @@ package com.simon.academytodolist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class ListViewModel: ViewModel() {
 
@@ -21,6 +23,13 @@ class ListViewModel: ViewModel() {
 
     fun deleteItem(position: Int){
         _itemList.value?.get(position)!!.isDeleted = true
+        _itemList.value = _itemList.value
+    }
+
+    fun restoreItem(position: Int){
+        val item = _itemList.value!![position]
+        item.isDeleted = false
+        item.data = ZonedDateTime.now()
         _itemList.value = _itemList.value
     }
 
