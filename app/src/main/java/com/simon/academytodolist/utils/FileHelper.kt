@@ -1,4 +1,4 @@
-package com.simon.academytodolist
+package com.simon.academytodolist.utils
 
 import android.content.Context
 import android.widget.Toast

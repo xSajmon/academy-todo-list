@@ -3,15 +3,23 @@ package com.simon.academytodolist
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.view.View.OnClickListener
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.simon.academytodolist.databinding.ActivityMainBinding
+import com.simon.academytodolist.fragments.DeleteItemDialogFragment
+import com.simon.academytodolist.models.Item
+import com.simon.academytodolist.services.FileService
+import com.simon.academytodolist.utils.ItemComparator
+import com.simon.academytodolist.utils.SharedPreferencesHelper
+import com.simon.academytodolist.view.ItemListAdapter
+import com.simon.academytodolist.view.ListType
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), OnClickListener{
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var item: EditText
@@ -20,7 +28,6 @@ class MainActivity : AppCompatActivity(){
     private lateinit var listAdapter: ItemListAdapter
     private var itemList: ArrayList<Item> = arrayListOf()
     private val listViewModel: ListViewModel by viewModels()
-    private var listType = ListType.ACTIVE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +39,7 @@ class MainActivity : AppCompatActivity(){
         recyclerView = binding.list
         recyclerView.layoutManager = LinearLayoutManager(applicationContext)
 
-        listAdapter = ItemListAdapter(ArrayList(), listType) { item, _ ->
+        listAdapter = ItemListAdapter(ArrayList()) { item, _ ->
             if(!item.isDeleted!!){
                 confirm(item)
             } else {
@@ -57,11 +64,10 @@ class MainActivity : AppCompatActivity(){
             item.text.clear()
         }
 
-        binding.modeBtn.setOnClickListener{
-            listType = if(listType == ListType.ACTIVE) ListType.ALL else ListType.ACTIVE
-            listAdapter.type = listType
-            listAdapter.setList(itemList)
-        }
+        binding.modeBtn.setOnClickListener(this)
+        binding.sortByTextBtn.setOnClickListener(this)
+        binding.sortByDateBtn.setOnClickListener(this)
+
     }
 
     private fun restore(item: Item) {
@@ -78,5 +84,20 @@ class MainActivity : AppCompatActivity(){
         dialog.arguments = bundle
         dialog.show(supportFragmentManager, DeleteItemDialogFragment.TAG)
     }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.modeBtn -> {
+                when(listAdapter.listType){
+                    ListType.ACTIVE -> listAdapter.listType = ListType.ALL
+                    ListType.ALL -> listAdapter.listType = ListType.ACTIVE
+                }
+            }
+            R.id.sortByTextBtn -> listAdapter.sortType = ItemComparator.BY_TEXT_LENGTH
+            R.id.sortByDateBtn -> listAdapter.sortType = ItemComparator.BY_DATE
+        }
+        listAdapter.setList(itemList)
+    }
+
 
 }

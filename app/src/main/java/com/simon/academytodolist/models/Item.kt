@@ -1,4 +1,4 @@
-package com.simon.academytodolist
+package com.simon.academytodolist.models
 
 import java.io.Serializable
 import java.time.ZonedDateTime

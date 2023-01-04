@@ -3,7 +3,7 @@ package com.simon.academytodolist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import java.time.LocalDateTime
+import com.simon.academytodolist.models.Item
 import java.time.ZonedDateTime
 
 class ListViewModel: ViewModel() {

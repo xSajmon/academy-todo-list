@@ -1,23 +1,34 @@
-package com.simon.academytodolist
+package com.simon.academytodolist.view
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.simon.academytodolist.utils.ItemComparator
+import com.simon.academytodolist.R
 import com.simon.academytodolist.databinding.ItemListBinding
+import com.simon.academytodolist.models.Item
 
 
-class ItemListAdapter(var items: ArrayList<Item>, var type: ListType, val listener: (Item, Int) -> Unit): RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
+class ItemListAdapter(var items: ArrayList<Item>,
+                      val listener: (Item, Int) -> Unit): RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
+
+    var sortType: ItemComparator? = null
+    var listType = ListType.ACTIVE
+
 
     fun setList(list: ArrayList<Item>){
         updateList(list)
         notifyDataSetChanged()
     }
 
-    fun updateList(list: ArrayList<Item>){
-        when(this.type) {
-            ListType.ALL -> this.items = list
-            ListType.ACTIVE -> this.items = list.filter { item -> item.isDeleted == false } as ArrayList<Item>
+    private fun updateList(list: ArrayList<Item>){
+        var sortedList = list
+        if(sortType != null){
+            sortedList = ArrayList(list.sortedWith(sortType!!))
+        }
+        when(listType) {
+            ListType.ALL -> this.items = sortedList
+            ListType.ACTIVE -> this.items = sortedList.filter { item -> item.isDeleted == false } as ArrayList<Item>
         }
     }
 

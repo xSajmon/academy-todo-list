@@ -1,9 +1,9 @@
-package com.simon.academytodolist
+package com.simon.academytodolist.utils
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
+import com.simon.academytodolist.models.Item
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 

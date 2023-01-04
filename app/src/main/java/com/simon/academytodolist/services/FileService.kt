@@ -1,9 +1,10 @@
-package com.simon.academytodolist
+package com.simon.academytodolist.services
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.simon.academytodolist.utils.SharedPreferencesHelper
 
 class FileService: Service() {
 
