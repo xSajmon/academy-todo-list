@@ -28,30 +28,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
-        android:id="@+id/modeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MODE"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="@id/button"/>
-
-    <Button
-        android:id="@+id/sortByDateBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sort by date"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toStartOf="@id/button"/>
-
-    <Button
-        android:id="@+id/sortByTextBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sort by title"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toStartOf="@id/sortByDateBtn"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
@@ -60,4 +36,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/editText"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sortingButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp"
+        android:weightSum="12"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <Button
+            android:id="@+id/sortByDateBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sort by date"
+            android:layout_weight="4"/>
+
+        <Button
+            android:id="@+id/sortByTextBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sort by text"
+            android:layout_weight="4"
+            android:layout_marginHorizontal="5dp"/>
+
+        <Button
+            android:id="@+id/sortByPosition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sort by position"
+            android:layout_weight="4"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    <Button
+        android:id="@+id/modeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MODE"
+        app:layout_constraintBottom_toTopOf="@+id/sortingButtons"
+        app:layout_constraintEnd_toEndOf="@id/button"/>
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

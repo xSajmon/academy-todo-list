@@ -9,27 +9,13 @@ import com.simon.academytodolist.databinding.ItemListBinding
 import com.simon.academytodolist.models.Item
 
 
-class ItemListAdapter(var items: ArrayList<Item>,
+class ItemListAdapter(var items: List<Item>,
                       val listener: (Item, Int) -> Unit): RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
-    var sortType: ItemComparator? = null
-    var listType = ListType.ACTIVE
 
-
-    fun setList(list: ArrayList<Item>){
-        updateList(list)
+    fun setList(list: List<Item>){
+        this.items = list
         notifyDataSetChanged()
-    }
-
-    private fun updateList(list: ArrayList<Item>){
-        var sortedList = list
-        if(sortType != null){
-            sortedList = ArrayList(list.sortedWith(sortType!!))
-        }
-        when(listType) {
-            ListType.ALL -> this.items = sortedList
-            ListType.ACTIVE -> this.items = sortedList.filter { item -> item.isDeleted == false } as ArrayList<Item>
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

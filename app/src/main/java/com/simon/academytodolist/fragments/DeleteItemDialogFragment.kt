@@ -5,7 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.simon.academytodolist.ListViewModel
+import com.simon.academytodolist.viewmodel.ListViewModel
 
 
 class DeleteItemDialogFragment: DialogFragment() {
@@ -24,7 +24,7 @@ class DeleteItemDialogFragment: DialogFragment() {
         alert.setCancelable(false)
         alert.setNegativeButton("No") { dialogInterface, _ -> dialogInterface.cancel() }
         alert.setPositiveButton("Yes") { dialogInterface, _ ->
-            listViewModel.deleteItem(position)
+            listViewModel.changeItemState(position)
             dialogInterface.cancel()
         }
         return alert.create()
